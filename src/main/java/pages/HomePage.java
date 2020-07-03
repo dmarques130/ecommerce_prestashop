@@ -5,17 +5,28 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage {
 	
 	private WebDriver driver;
+	
 	List<WebElement> listaProdutos = new ArrayList<WebElement>();
+	
 	private By textoProdutosNoCarrinho = By.className("cart-products-count");
+	
 	private By produtos = By.className("product-description");
+	
 	private By botaoSignIn = By.cssSelector("#_desktop_user_info span.hidden-sm-down");
+	
 	private By usuarioLogado = By.cssSelector("#_desktop_user_info span.hidden-sm-down");
+	
 	private By descricoesDosProdutos = By.cssSelector(".product-description a");
+	
 	private By precoDosProdutos = By.cssSelector(".product-description span.price");
+	
+	private By botaoSignOut = By.cssSelector("a.logout.hidden-sm-down i.material-icons");
 	
 	
 	public HomePage(WebDriver driver) {
@@ -64,5 +75,9 @@ public class HomePage {
 	public ProdutoPage ClicarProduto(int indice) {
 		driver.findElements(descricoesDosProdutos).get(indice).click();
 		return new ProdutoPage(driver);
+	}
+	
+	public void clicarBotaoSignOut() {
+		driver.findElement(botaoSignOut).click();
 	}
 }

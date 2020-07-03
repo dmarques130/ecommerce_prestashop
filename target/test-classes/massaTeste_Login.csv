@@ -1,0 +1,3 @@
+nomeTeste;email;password;nomeUsuario;resultado
+loginValido;teste@teste.com;teste;Teste Testador;positivo
+loginInvalido;diogo@teste.com;teste123;Teste Testador;negativo

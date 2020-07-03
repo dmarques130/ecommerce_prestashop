@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import base.BaseTests;
 import pages.CarrinhoPage;
@@ -49,6 +51,42 @@ public class HomePageTests extends BaseTests {
 		
 		//Validar se usuário está de fato logado
 		assertThat(homePage.estaLogado("Teste Testador"), is(true));
+		
+		carregarPaginaInicial();
+	}
+	
+	@ParameterizedTest
+	@CsvFileSource(resources = "/massaTeste_Login.csv", numLinesToSkip = 1, delimiter = ';')
+	public void testLogin_UsuarioLogadoComDadosValidos(String nomeTeste, String email, String password, String nomeUsuario, String resultado) {
+		
+		//Clicar no botão Sign in na Home Page
+		loginPage = homePage.clicarBotaoSignIn();
+		
+		//Preencher usuário e senha
+		loginPage.preencherEmail(email);
+		loginPage.preencherPassword(password);
+		
+		//Clicar no botão Sign in para logar
+		loginPage.clicarBotaoSignIn();
+		
+		boolean esperado_LoginOK;	
+		
+		if (resultado.equals("positivo"))
+		{
+			esperado_LoginOK = true;
+		}
+		else
+		{
+			esperado_LoginOK = false;
+		}
+		
+		//Validar se usuário está de fato logado
+		assertThat(homePage.estaLogado(nomeUsuario), is(esperado_LoginOK));
+		
+		if (esperado_LoginOK == true)
+		{
+			homePage.clicarBotaoSignOut();
+		}
 		
 		carregarPaginaInicial();
 	}
@@ -162,42 +200,6 @@ public class HomePageTests extends BaseTests {
 		testIncluirProdutoNoCarrinho_ProdutoIncluidoComSucesso();
 		carrinhoPage = modalProdutoPage.clicarBotaoProceedToCheckout();
 			
-		//Teste
-		//Validar todos os elementos
-//		System.out.println("*** TELA DO CARRINHO ***");
-//		
-//		System.out.println(carrinhoPage.obter_nomeDoProduto());
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_precoDoProduto()));
-//		System.out.println(carrinhoPage.obter_tamanhoDoProduto());
-//		System.out.println(carrinhoPage.obter_corDoProduto());
-//		System.out.println(carrinhoPage.obter_inputQuantidadeDoProduto());
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_subTotalDoProduto()));
-//		
-//		System.out.println("*** ITENS DE TOTAIS ***");
-//		
-//		System.out.println(Funcoes.removeTextoItemsDevolveInt(carrinhoPage.obter_numeroItensTotal()));
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_subtotalTotal()));
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_shippingTotal()));
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_totalTaxExclTotal()));
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_totalTaxInclTotal()));
-//		System.out.println(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_taxesTotal()));
-		
-		// Asserções Hamcrest
-//		assertThat(carrinhoPage.obter_nomeDoProduto(), is(esperado_nomeDoProduto));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_precoDoProduto()), is(esperado_precoDoProduto));
-//		assertThat(carrinhoPage.obter_tamanhoDoProduto(), is(esperado_tamanhoDoProduto));
-//		assertThat(carrinhoPage.obter_corDoProduto(), is(esperado_corDoProduto));
-//		assertThat(Integer.parseInt(carrinhoPage.obter_inputQuantidadeDoProduto()), is(esperado_inputQuantidadeDoProduto));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_subTotalDoProduto()), is(esperado_subTotalDoProduto));
-//		
-//		assertThat(Funcoes.removeTextoItemsDevolveInt(carrinhoPage.obter_numeroItensTotal()), is(esperado_numeroItensTotal));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_subtotalTotal()), is(esperado_subtotalTotal));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_shippingTotal()), is(esperado_shippingTotal));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_totalTaxExclTotal()), is(esperado_totalTaxExclTotal));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_totalTaxInclTotal()), is(esperado_totalTaxInclTotal));
-//		assertThat(Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_taxesTotal()), is(esperado_taxesTotal));
-//		
-		// Asserções JUnit
 		assertEquals(esperado_nomeDoProduto, carrinhoPage.obter_nomeDoProduto());
 		assertEquals(esperado_precoDoProduto, Funcoes.removeCifraoDevolveDouble(carrinhoPage.obter_precoDoProduto()));
 		assertEquals(esperado_tamanhoDoProduto, carrinhoPage.obter_tamanhoDoProduto());
@@ -217,7 +219,7 @@ public class HomePageTests extends BaseTests {
 	CheckoutPage checkoutPage;
 	
 	@Test
-	public void IrPraCheckout_FreteMeioPagamentoEnderecoListadosOk() {
+	public void testIrPraCheckout_FreteMeioPagamentoEnderecoListadosOk() {
 		// Pré condições
 		// Produto disponivel no carrinho de compras
 		testIrParaCarrinho_InformacoesPersistidas();
@@ -256,7 +258,7 @@ public class HomePageTests extends BaseTests {
 	public void testFinalizarPedido_pedidoFinalizadoComSucesso() {
 		//Pré-condições
 		//Checkout completamente concluído
-		IrPraCheckout_FreteMeioPagamentoEnderecoListadosOk();
+		testIrPraCheckout_FreteMeioPagamentoEnderecoListadosOk();
 		
 		//Teste
 		//Clicar no botão para confirmar o pedido

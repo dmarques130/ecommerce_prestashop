@@ -6,8 +6,11 @@ import org.openqa.selenium.WebDriver;
 public class LoginPage {
 	
 	private WebDriver driver;
+	
 	private By email = By.name("email");
+	
 	private By password = By.name("password");
+	
 	private By botaoSignIn = By.id("submit-login");
 	
 	public LoginPage(WebDriver driver) {
