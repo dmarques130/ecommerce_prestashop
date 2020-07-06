@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import util.Funcoes;
+
 
 public class ModalProdutoPage {
 	
@@ -38,8 +40,9 @@ public class ModalProdutoPage {
 		return driver.findElement(descricaoDoProduto).getText();
 	}
 	
-	public String obterPrecoDoProduto() {
-		return driver.findElement(precoDoProduto).getText();
+	public Double obterPrecoDoProduto() {
+		String texto = driver.findElement(precoDoProduto).getText();
+		return Funcoes.removeCifraoDevolveDouble(texto);
 	}
 	
 	public String obterTamanhoDoProduto() {
@@ -47,15 +50,24 @@ public class ModalProdutoPage {
 	}
 	
 	public String obterCorDoProduto() {
-		return driver.findElements(listaValoresInformados).get(1).getText();
+		
+		if (driver.findElements(listaValoresInformados).size() == 3)
+			return driver.findElements(listaValoresInformados).get(1).getText();
+		else
+			return "N/A";		
 	}
 	
 	public String obterQuantidadeDoProduto() {
-		return driver.findElements(listaValoresInformados).get(2).getText();
+		
+		if (driver.findElements(listaValoresInformados).size() == 3)
+			return driver.findElements(listaValoresInformados).get(2).getText();
+		else
+			return driver.findElements(listaValoresInformados).get(1).getText();		
 	}
 	
-	public String obterSubTotal() {
-		return driver.findElement(subTotal).getText();
+	public Double obterSubTotal() {
+		String texto = driver.findElement(subTotal).getText();
+		return Funcoes.removeCifraoDevolveDouble(texto);
 	}
 
 	public CarrinhoPage clicarBotaoProceedToCheckout() {

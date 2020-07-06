@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import util.Funcoes;
+
 public class ProdutoPage {
 
 	private WebDriver driver;
@@ -25,8 +27,9 @@ public class ProdutoPage {
 		return driver.findElement(nomeDoProduto).getText();
 	}
 	
-	public String obterPrecoProduto() {
-		return driver.findElement(precoDoProduto).getText();
+	public double obterPrecoProduto() {
+		String precoProdutoString = driver.findElement(precoDoProduto).getText();
+		return Funcoes.removeCifraoDevolveDouble(precoProdutoString);
 	}
 	
 	public void selecionarOpcaoDropDown(String opcao) {

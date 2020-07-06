@@ -5,8 +5,9 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import util.Funcoes;
+
 
 public class HomePage {
 	
@@ -58,9 +59,9 @@ public class HomePage {
 		return nomeDoProduto;
 	}
 	
-	public String obterPrecoDoProduto(int indice) {
+	public double obterPrecoDoProduto(int indice) {
 		String precoDoProduto = driver.findElements(precoDosProdutos).get(indice).getText();
-		return precoDoProduto;
+		return Funcoes.removeCifraoDevolveDouble(precoDoProduto);	
 	}
 	
 	public LoginPage clicarBotaoSignIn() {
@@ -72,6 +73,11 @@ public class HomePage {
 		return texto.contentEquals(driver.findElement(usuarioLogado).getText());
 	}
 	
+	public boolean estaLogado() {
+		String texto = driver.findElement(usuarioLogado).getText();
+		return !texto.contentEquals(driver.findElement(usuarioLogado).getText());
+	}
+	
 	public ProdutoPage ClicarProduto(int indice) {
 		driver.findElements(descricoesDosProdutos).get(indice).click();
 		return new ProdutoPage(driver);
@@ -79,5 +85,13 @@ public class HomePage {
 	
 	public void clicarBotaoSignOut() {
 		driver.findElement(botaoSignOut).click();
+	}
+
+	public void carregarPaginalInicial() {
+		driver.get("https://marcelodebittencourt.com/demoprestashop/");		
+	}
+
+	public String obterTituloPagina() {
+		return driver.getTitle();
 	}
 }

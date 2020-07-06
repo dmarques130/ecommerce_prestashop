@@ -39,17 +39,17 @@ public class HomePageTests extends BaseTests {
 	
 	@Test
 	public void testLoginComSucesso_UsuarioLogado() {
-		//Clicar no botão Sign in na Home Page
+		//Clicar no botï¿½o Sign in na Home Page
 		loginPage = homePage.clicarBotaoSignIn();
 		
-		//Preencher usuário e senha
+		//Preencher usuï¿½rio e senha
 		loginPage.preencherEmail("teste@teste.com");
 		loginPage.preencherPassword("teste");
 		
-		//Clicar no botão Sign in para logar
+		//Clicar no botï¿½o Sign in para logar
 		loginPage.clicarBotaoSignIn();
 		
-		//Validar se usuário está de fato logado
+		//Validar se usuï¿½rio estï¿½ de fato logado
 		assertThat(homePage.estaLogado("Teste Testador"), is(true));
 		
 		carregarPaginaInicial();
@@ -59,34 +59,30 @@ public class HomePageTests extends BaseTests {
 	@CsvFileSource(resources = "/massaTeste_Login.csv", numLinesToSkip = 1, delimiter = ';')
 	public void testLogin_UsuarioLogadoComDadosValidos(String nomeTeste, String email, String password, String nomeUsuario, String resultado) {
 		
-		//Clicar no botão Sign in na Home Page
+		//Clicar no botï¿½o Sign in na Home Page
 		loginPage = homePage.clicarBotaoSignIn();
 		
-		//Preencher usuário e senha
+		//Preencher usuï¿½rio e senha
 		loginPage.preencherEmail(email);
 		loginPage.preencherPassword(password);
 		
-		//Clicar no botão Sign in para logar
+		//Clicar no botï¿½o Sign in para logar
 		loginPage.clicarBotaoSignIn();
 		
 		boolean esperado_LoginOK;	
 		
 		if (resultado.equals("positivo"))
-		{
 			esperado_LoginOK = true;
-		}
 		else
-		{
 			esperado_LoginOK = false;
-		}
 		
-		//Validar se usuário está de fato logado
+		//Validar se usuï¿½rio estï¿½ de fato logado
 		assertThat(homePage.estaLogado(nomeUsuario), is(esperado_LoginOK));
 		
+		capturarTela(nomeTeste, resultado);
+		
 		if (esperado_LoginOK == true)
-		{
 			homePage.clicarBotaoSignOut();
-		}
 		
 		carregarPaginaInicial();
 	}
@@ -99,7 +95,7 @@ public class HomePageTests extends BaseTests {
 		int indice = 0;
 		
 		String nomeProduto_HomePage = homePage.obterNomeDoProduto(indice);
-		String precoProduto_HomePage = homePage.obterPrecoDoProduto(indice);
+		double precoProduto_HomePage = homePage.obterPrecoDoProduto(indice);
 		
 		//System.out.println(nomeProduto_HomePage.toUpperCase());
 		//System.out.println(precoProduto_HomePage);
@@ -107,7 +103,7 @@ public class HomePageTests extends BaseTests {
 		produtoPage = homePage.ClicarProduto(indice);
 		
 		nomeProduto_ProdutoPage = produtoPage.obterNomeProduto();
-		String precoProduto_ProdutoPage = produtoPage.obterPrecoProduto();
+		double precoProduto_ProdutoPage = produtoPage.obterPrecoProduto();
 		
 		//System.out.println(nomeProduto_ProdutoPage);
 		//System.out.println(precoProduto_ProdutoPage);
@@ -125,24 +121,19 @@ public class HomePageTests extends BaseTests {
 		String corDoProduto = "Black";
 		int quantidadeDoProduto = 2;
 		
-		// Pré-condições
-		// O usuário deve estar logado
+		// Pre-condicoes
+		// O usuario deve estar logado
 		if(!homePage.estaLogado("Teste Testador")) {
 			testLoginComSucesso_UsuarioLogado();
 		}
 		
 		// Teste
-		// Selecionando o produto e validando descrição e valor
+		// Selecionando o produto e validando descriï¿½ï¿½o e valor
 		testValidarDetalhesDoProduto_DescricaoEValorIguais();
 		
-		// Selecionar o tamanho do produto
-			
-		List<String> listaOpcoes = produtoPage.obterOpcoesSelecionadas();
-		//System.out.println(listaOpcoes.get(0));
-		//System.out.println("Tamanho da lista" + listaOpcoes.size());
-		
+		// Selecionar o tamanho do produto		
 		produtoPage.selecionarOpcaoDropDown(tamanhoDoProduto);
-		listaOpcoes = produtoPage.obterOpcoesSelecionadas();
+		//List<String> listaOpcoes = produtoPage.obterOpcoesSelecionadas();
 		
 		// Selecionar a cor do produto
 		produtoPage.selecionarCorPreta();
@@ -152,26 +143,17 @@ public class HomePageTests extends BaseTests {
 		
 		// Adicionar o produto no carrinho
 		modalProdutoPage = produtoPage.clicarNoBotaoAddToCart();
-		//String mensagem = modalProdutoPage.obterMensagemProdutoAdicionado();
 		
-		// Validações
+		// Validacoes
 		assertTrue(modalProdutoPage.obterMensagemProdutoAdicionado().endsWith("Product successfully added to your shopping cart"));
-		assertThat(modalProdutoPage.obterDescricaoDoProduto().toUpperCase(), is(nomeProduto_ProdutoPage.toUpperCase()));
-		
-		String precoProdutoString = modalProdutoPage.obterPrecoDoProduto();
-		precoProdutoString = precoProdutoString.replace("$", "");
-		Double precoProduto = Double.parseDouble(precoProdutoString);
-			
+		assertThat(modalProdutoPage.obterDescricaoDoProduto().toUpperCase(), is(nomeProduto_ProdutoPage.toUpperCase()));		
 		assertThat(modalProdutoPage.obterTamanhoDoProduto(), is(tamanhoDoProduto));
 		assertThat(modalProdutoPage.obterCorDoProduto(), is(corDoProduto));
 		assertThat(modalProdutoPage.obterQuantidadeDoProduto(), is(Integer.toString(quantidadeDoProduto)));
 		
-		String subTotalString = modalProdutoPage.obterSubTotal();
-		subTotalString = subTotalString.replace("$", "");
-		Double subTotal = Double.parseDouble(subTotalString);
+		Double subTotalCalculado = (modalProdutoPage.obterPrecoDoProduto() * quantidadeDoProduto);	
 		
-		Double subTotalCalculado = (precoProduto * quantidadeDoProduto);	
-		assertThat(subTotal, is(subTotalCalculado));	
+		assertThat(modalProdutoPage.obterSubTotal(), is(subTotalCalculado));
 	}
 	
 	CarrinhoPage carrinhoPage;
@@ -195,8 +177,8 @@ public class HomePageTests extends BaseTests {
 	
 	@Test
 	public void testIrParaCarrinho_InformacoesPersistidas() {
-		// Pré-Condições
-		// Produto incluído na tela ModalProdutoPage
+		// Pre-Condicoes
+		// Produto incluido na tela ModalProdutoPage
 		testIncluirProdutoNoCarrinho_ProdutoIncluidoComSucesso();
 		carrinhoPage = modalProdutoPage.clicarBotaoProceedToCheckout();
 			
@@ -220,17 +202,17 @@ public class HomePageTests extends BaseTests {
 	
 	@Test
 	public void testIrPraCheckout_FreteMeioPagamentoEnderecoListadosOk() {
-		// Pré condições
+		// Pre-condicoes
 		// Produto disponivel no carrinho de compras
 		testIrParaCarrinho_InformacoesPersistidas();
 	
 		// Teste
 		
-		//Clicar no botão
+		//Clicar no botao
 		checkoutPage = carrinhoPage.ClicarBotaoProceedToCheckout();
-		//Preencher informações
+		//Preencher informacoes
 		
-		//Validar informações na tela
+		//Validar informacoes na tela
 		assertThat(checkoutPage.obter_totalTaxInclTotal(), is(esperado_totalTaxInclTotal));
 		assertTrue(checkoutPage.obter_nomeCliente().startsWith(esperado_nomeCliente));
 		
@@ -240,13 +222,13 @@ public class HomePageTests extends BaseTests {
 		
 		checkoutPage.ClicarBotaoContinueShipping();
 		
-		//Selecionar opção "Pay By Check"
+		//Selecionar opcao "Pay By Check"
 		checkoutPage.selecionarRadioPayByCheck();
 		
 		//Validar valor do cheque (amount)
 		assertThat(checkoutPage.obter_amountPayByCheck(), is(esperado_totalTaxInclTotal));
 		
-		//Clicar na opção "I Agree"
+		//Clicar na opcao "I Agree"
 		checkoutPage.selecionarCheckboxIAgree();
 		assertTrue(checkoutPage.estaSelecionadoCheckboxIAgree());
 		
@@ -256,12 +238,12 @@ public class HomePageTests extends BaseTests {
 	
 	@Test
 	public void testFinalizarPedido_pedidoFinalizadoComSucesso() {
-		//Pré-condições
-		//Checkout completamente concluído
+		//Pre-condicoes
+		//Checkout completamente concluï¿½do
 		testIrPraCheckout_FreteMeioPagamentoEnderecoListadosOk();
 		
 		//Teste
-		//Clicar no botão para confirmar o pedido
+		//Clicar no botao para confirmar o pedido
 		pedidoPage = checkoutPage.clicarBotaoConfirmarPedido();
 		//Validar valores da tela
 		
